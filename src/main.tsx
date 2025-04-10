@@ -2,23 +2,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import VelocidadOptima from "./pages/velocidadOptima/OrdenNavVelocidadOptima";
 import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
 import OrdenNavVelocidadOptima from "./pages/velocidadOptima/OrdenNavVelocidadOptima";
-import Login from "./pages/login/Login";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
-  },
-  {
-    path: "/registrarVelocidad",
-    element: <VelocidadOptima />,
-  },
-  {
-    path: "/ordenNavegacionVelocidadOptima",
     element: <OrdenNavVelocidadOptima />,
     action: async ({ request }) => {
       const formData = await request.formData();

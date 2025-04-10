@@ -1,14 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { CodigoOperacion } from "@/interfaces/CodigoOperacion";
 import { OrdenNavegacion } from "@/interfaces/OrdenNavegacion";
 import { VelocidadOptimaInterface } from "@/interfaces/VelocidadOptimaInterface";
@@ -57,6 +49,7 @@ const OrdenNavVelocidadOptima = () => {
     setVelocidadOptimaEmbarcacionSeleccionada,
   ] = useState(0);
 
+  console.log(listarCodigoOperacion,setUsuario,setFechaHora)
   const [showAlert, setShowAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
 
