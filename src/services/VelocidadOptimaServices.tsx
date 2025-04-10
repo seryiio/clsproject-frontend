@@ -1,7 +1,7 @@
 import axios from "axios";
 import { VelocidadOptimaInterface } from "@/interfaces/VelocidadOptimaInterface";
 
-export const URL_VELOCIDADES_OPTIMAS = `http://localhost:3000/api/v1/velocidadOptima`;
+export const URL_VELOCIDADES_OPTIMAS = `https://myanime-api.onrender.com/api/v1/velocidadOptima`;
 
 
 export const getVelocidadOptima = async (setVelocidadOptima: React.Dispatch<React.SetStateAction<VelocidadOptimaInterface[]>>) => {

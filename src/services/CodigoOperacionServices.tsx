@@ -1,7 +1,7 @@
 import axios from "axios";
 import { CodigoOperacion } from "@/interfaces/CodigoOperacion";
 
-export const URL_CODIGOS_OPERACION = `http://localhost:3000/api/v1/codigoOperacion`;
+export const URL_CODIGOS_OPERACION = `https://myanime-api.onrender.com/api/v1/codigoOperacion`;
 
 export const getCodigoOperacion = async (setCodigoOperacion: React.Dispatch<React.SetStateAction<CodigoOperacion[]>>) => {
     try {
