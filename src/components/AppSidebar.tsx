@@ -17,7 +17,7 @@ import logo from '../../public/logosidebar.png'
 const items = [
   {
     title: "Registrar velocidad optima",
-    url: "/ordenNavegacionVelocidadOptima",
+    url: "/",
     icon: Book,
   },
   {
