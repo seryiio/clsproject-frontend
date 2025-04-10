@@ -1,0 +1,1 @@
+export const URL_LOGIN = "https://myanime-api.onrender.com/api/v1/login";
