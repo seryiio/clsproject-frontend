@@ -49,7 +49,7 @@ const OrdenNavVelocidadOptima = () => {
     setVelocidadOptimaEmbarcacionSeleccionada,
   ] = useState(0);
 
-  console.log(listarCodigoOperacion,setUsuario,setFechaHora)
+  console.log(listarCodigoOperacion,setUsuario,setFechaHora,fechaHora)
   const [showAlert, setShowAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
 
@@ -99,7 +99,7 @@ const OrdenNavVelocidadOptima = () => {
 
     let parameters: OrdenNavegacion = {
       usuario: usuario.trim(),
-      fecha_hora: fechaHora,
+      fecha_hora: new Date(),
       embarcacion: embarcacionSeleccionada.trim(),
       codigo_operacion: codigoOperacionEmbarcacionSeleccionada.trim(),
       velocidad_optima: velocidadOptimaEmbarcacionSeleccionada,
