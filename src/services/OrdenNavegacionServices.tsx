@@ -1,7 +1,7 @@
 import axios from "axios";
 import { OrdenNavegacion } from "@/interfaces/OrdenNavegacion";
 
-export const URL_ORDEN_NAVEGACION = `https://myanime-api.onrender.com/api/v1/ordenNavegacionOptima`;
+export const URL_ORDEN_NAVEGACION = `https://clsproject-backend.onrender.com/api/v1/ordenNavegacionOptima`;
 
 export const getOrdenNavegacionOptima = async (setOrdenNavegacionOptima: React.Dispatch<React.SetStateAction<OrdenNavegacion[]>>) => {
     try {
