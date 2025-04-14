@@ -1,19 +1,14 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CodigoOperacion } from "@/interfaces/CodigoOperacion";
+import { IEmbarcacionesFaena } from "@/interfaces/IEmbarcacionesFaena";
 import { OrdenNavegacion } from "@/interfaces/OrdenNavegacion";
-import { VelocidadOptimaInterface } from "@/interfaces/VelocidadOptimaInterface";
-import {
-  getCodigoOperacion,
-  getCodigoOperacionporEmbarcacion,
-} from "@/services/CodigoOperacionServices";
+import { getEmbarcacionesEnFaena } from "@/services/EmbarcacionesEnFaenaServices";
 import {
   getOrdenNavegacionOptima,
   URL_ORDEN_NAVEGACION,
 } from "@/services/OrdenNavegacionServices";
 import {
-  getVelocidadOptima,
   getVelocidadPorEmbarcacion,
 } from "@/services/VelocidadOptimaServices";
 import { Label } from "@radix-ui/react-label";
@@ -23,39 +18,27 @@ import { useEffect, useState } from "react";
 import { Form } from "react-router-dom";
 
 const OrdenNavVelocidadOptima = () => {
-  const [listarEmbarcaciones, setEmbarcaciones] = useState<
-    VelocidadOptimaInterface[]
-  >([]);
-  const [listarCodigoOperacion, setCodigoOperacion] = useState<
-    CodigoOperacion[]
-  >([]);
+  const [listarEmbarcacionesFaena, setEmbarcacionesFaena] = useState<IEmbarcacionesFaena[]>([]);
   const [ordenNavegacionOptima, setOrdenNavegacionOptima] = useState<
     OrdenNavegacion[]
   >([]);
 
   const [selectedEmbarcacion, setSelectedEmbarcacion] = useState<string>("");
-  const [codigoOperacion, setCodigoOperacionInput] = useState<string>("");
   const [velocidadOptima, setVelocidadOptima] = useState<number>(0);
 
-  const [usuario, setUsuario] = useState("");
   const [fechaHora, setFechaHora] = useState(new Date());
   const [embarcacionSeleccionada, setEmbarcacionSeleccionada] = useState("");
-  const [
-    codigoOperacionEmbarcacionSeleccionada,
-    setCodigoOperacionEmbarcacionSeleccionada,
-  ] = useState("");
   const [
     velocidadOptimaEmbarcacionSeleccionada,
     setVelocidadOptimaEmbarcacionSeleccionada,
   ] = useState(0);
 
-  console.log(listarCodigoOperacion,setUsuario,setFechaHora,fechaHora)
+  console.log(setFechaHora,fechaHora)
   const [showAlert, setShowAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
 
   useEffect(() => {
-    getVelocidadOptima(setEmbarcaciones);
-    getCodigoOperacion(setCodigoOperacion);
+    getEmbarcacionesEnFaena(setEmbarcacionesFaena);
     getOrdenNavegacionOptima(setOrdenNavegacionOptima);
   }, []);
 
@@ -74,19 +57,6 @@ const OrdenNavVelocidadOptima = () => {
         }
       };
       fetchVelocidad();
-
-      const fetchCodigoOperacion = async () => {
-        try {
-          const codOperacionData = await getCodigoOperacionporEmbarcacion(
-            selectedEmbarcacion
-          );
-          setCodigoOperacionInput(codOperacionData);
-          setCodigoOperacionEmbarcacionSeleccionada(codOperacionData);
-        } catch (error) {
-          console.error("Error al obtener el código de operación:", error);
-        }
-      };
-      fetchCodigoOperacion();
     }
   }, [selectedEmbarcacion]);
 
@@ -98,10 +68,8 @@ const OrdenNavVelocidadOptima = () => {
     }
 
     let parameters: OrdenNavegacion = {
-      usuario: usuario.trim(),
-      fecha_hora: new Date(),
+      fecha_hora: new Date().toLocaleString(),
       embarcacion: embarcacionSeleccionada.trim(),
-      codigo_operacion: codigoOperacionEmbarcacionSeleccionada.trim(),
       velocidad_optima: velocidadOptimaEmbarcacionSeleccionada,
     };
 
@@ -145,23 +113,12 @@ const OrdenNavVelocidadOptima = () => {
             className="w-full border rounded p-2"
           >
             <option value="">Seleccionar</option>
-            {listarEmbarcaciones.map((e) => (
-              <option key={e.embarcacion} value={e.embarcacion}>
-                {e.embarcacion}
+            {listarEmbarcacionesFaena.map((e) => (
+              <option key={e.EMBARCACION} value={e.EMBARCACION}>
+                {e.EMBARCACION}
               </option>
             ))}
           </select>
-        </div>
-        <div>
-          <Label htmlFor="codigo">Código de Operación</Label>
-          <Input
-            id="codigo"
-            type="text"
-            placeholder="Código de operación"
-            value={codigoOperacion}
-            onChange={(e) => setCodigoOperacionInput(e.target.value)}
-            disabled
-          />
         </div>
         <div>
           <Label htmlFor="velocidad">Velocidad Óptima</Label>
@@ -191,9 +148,7 @@ const OrdenNavVelocidadOptima = () => {
           <tr className="bg-gray-100 text-left">
             <th className="px-4 py-2 border">#</th>
             <th className="px-4 py-2 border">Embarcación</th>
-            <th className="px-4 py-2 border">Código Operación</th>
             <th className="px-4 py-2 border">Velocidad Óptima</th>
-            <th className="px-4 py-2 border">Usuario</th>
             <th className="px-4 py-2 border">Fecha y Hora</th>
           </tr>
         </thead>
@@ -202,11 +157,9 @@ const OrdenNavVelocidadOptima = () => {
             <tr key={index} className="hover:bg-gray-50">
               <td className="px-4 py-2 border">{index + 1}</td>
               <td className="px-4 py-2 border">{registro.embarcacion}</td>
-              <td className="px-4 py-2 border">{registro.codigo_operacion}</td>
               <td className="px-4 py-2 border">{registro.velocidad_optima}</td>
-              <td className="px-4 py-2 border">{registro.usuario}</td>
               <td className="px-4 py-2 border">
-                {new Date(registro.fecha_hora).toLocaleString()}
+                {registro.fecha_hora}
               </td>
             </tr>
           ))}
