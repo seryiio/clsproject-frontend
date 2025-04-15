@@ -24,10 +24,10 @@ const OrdenNavVelocidadOptima = () => {
   >([]);
 
   const [selectedEmbarcacion, setSelectedEmbarcacion] = useState<string>("");
+  const [embarcacionSeleccionada, setEmbarcacionSeleccionada] = useState("");
   const [velocidadOptima, setVelocidadOptima] = useState<number>(0);
 
   const [fechaHora, setFechaHora] = useState(new Date());
-  const [embarcacionSeleccionada, setEmbarcacionSeleccionada] = useState("");
   const [
     velocidadOptimaEmbarcacionSeleccionada,
     setVelocidadOptimaEmbarcacionSeleccionada,
@@ -68,7 +68,9 @@ const OrdenNavVelocidadOptima = () => {
     }
 
     let parameters: OrdenNavegacion = {
-      fecha_hora: new Date().toLocaleString(),
+      fecha_hora: new Date().toLocaleString('es-ES', {
+        hour12: false
+      }),
       embarcacion: embarcacionSeleccionada.trim(),
       velocidad_optima: velocidadOptimaEmbarcacionSeleccionada,
     };
