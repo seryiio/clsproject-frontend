@@ -63,13 +63,13 @@ const OrdenNavVelocidadOptima = () => {
       setTimeout(() => setErrorAlert(false), 3000);
       return;
     }
-  
+
     let parameters: OrdenNavegacion = {
       fecha_hora: new Date().toLocaleString('es-ES', { hour12: false }),
       embarcacion: embarcacionSeleccionada.trim(),
       velocidad_optima: velocidadOptimaEmbarcacionSeleccionada,
     };
-  
+
     await sendRequest("POST", parameters);
   };
 
@@ -116,9 +116,9 @@ const OrdenNavVelocidadOptima = () => {
             className="w-full border rounded p-2"
           >
             <option value="">Seleccionar</option>
-            {listarEmbarcacionesFaena.map((e) => (
+            {listarEmbarcacionesFaena.map((e, index) => (
               <option key={e.EMBARCACION} value={e.EMBARCACION}>
-                {e.EMBARCACION}
+                {index + 1}. {e.EMBARCACION}
               </option>
             ))}
           </select>
