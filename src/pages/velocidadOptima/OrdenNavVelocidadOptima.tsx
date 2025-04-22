@@ -13,29 +13,28 @@ import {
 } from "@/services/VelocidadOptimaServices";
 import { Label } from "@radix-ui/react-label";
 import axios from "axios";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Form } from "react-router-dom";
 
 const OrdenNavVelocidadOptima = () => {
   const [listarEmbarcacionesFaena, setEmbarcacionesFaena] = useState<IEmbarcacionesFaena[]>([]);
-  const [ordenNavegacionOptima, setOrdenNavegacionOptima] = useState<
-    OrdenNavegacion[]
-  >([]);
+  const [ordenNavegacionOptima, setOrdenNavegacionOptima] = useState<OrdenNavegacion[]>([]);
 
   const [selectedEmbarcacion, setSelectedEmbarcacion] = useState<string>("");
   const [embarcacionSeleccionada, setEmbarcacionSeleccionada] = useState("");
   const [velocidadOptima, setVelocidadOptima] = useState<number>(0);
 
+  const [id, setId] = useState<number | undefined>(undefined);
   const [fechaHora, setFechaHora] = useState(new Date());
-  const [
-    velocidadOptimaEmbarcacionSeleccionada,
-    setVelocidadOptimaEmbarcacionSeleccionada,
-  ] = useState(0);
+  const [velocidadOptimaEmbarcacionSeleccionada, setVelocidadOptimaEmbarcacionSeleccionada] = useState(0);
 
-  console.log(setFechaHora,fechaHora)
   const [showAlert, setShowAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
+  const [deleteAlert, setDeleteAlert] = useState(false);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [idToDelete, setIdToDelete] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     getEmbarcacionesEnFaena(setEmbarcacionesFaena);
@@ -46,9 +45,7 @@ const OrdenNavVelocidadOptima = () => {
     if (selectedEmbarcacion) {
       const fetchVelocidad = async () => {
         try {
-          const velocidadData = await getVelocidadPorEmbarcacion(
-            selectedEmbarcacion
-          );
+          const velocidadData = await getVelocidadPorEmbarcacion(selectedEmbarcacion);
           setVelocidadOptima(velocidadData);
           setEmbarcacionSeleccionada(selectedEmbarcacion);
           setVelocidadOptimaEmbarcacionSeleccionada(velocidadData);
@@ -61,20 +58,18 @@ const OrdenNavVelocidadOptima = () => {
   }, [selectedEmbarcacion]);
 
   const validate = async () => {
-    if (selectedEmbarcacion.trim() === "") {
+    if (selectedEmbarcacion.trim() === "" || velocidadOptimaEmbarcacionSeleccionada === 0) {
       setErrorAlert(true);
       setTimeout(() => setErrorAlert(false), 3000);
       return;
     }
-
+  
     let parameters: OrdenNavegacion = {
-      fecha_hora: new Date().toLocaleString('es-ES', {
-        hour12: false
-      }),
+      fecha_hora: new Date().toLocaleString('es-ES', { hour12: false }),
       embarcacion: embarcacionSeleccionada.trim(),
       velocidad_optima: velocidadOptimaEmbarcacionSeleccionada,
     };
-
+  
     await sendRequest("POST", parameters);
   };
 
@@ -87,12 +82,18 @@ const OrdenNavVelocidadOptima = () => {
       });
 
       setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
+      setTimeout(() => setShowAlert(false), 3000);
     } catch (error) {
       alert("Hubo un error");
     }
+    getOrdenNavegacionOptima(setOrdenNavegacionOptima);
+  };
+
+  const deleteOrden = async (id: number | undefined) => {
+    setId(id);
+    await axios({ method: 'DELETE', url: URL_ORDEN_NAVEGACION + `/${id}`, data: id });
+    setDeleteAlert(true);
+    setTimeout(() => setDeleteAlert(false), 3000);
     getOrdenNavegacionOptima(setOrdenNavegacionOptima);
   };
 
@@ -145,6 +146,7 @@ const OrdenNavVelocidadOptima = () => {
           Registrar
         </Button>
       </Form>
+
       <table className="min-w-full bg-white border border-gray-300 rounded-lg">
         <thead>
           <tr className="bg-gray-100 text-left">
@@ -152,6 +154,7 @@ const OrdenNavVelocidadOptima = () => {
             <th className="px-4 py-2 border">Embarcación</th>
             <th className="px-4 py-2 border">Velocidad Óptima</th>
             <th className="px-4 py-2 border">Fecha y Hora</th>
+            <th className="px-4 py-2 border">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -160,20 +163,30 @@ const OrdenNavVelocidadOptima = () => {
               <td className="px-4 py-2 border">{index + 1}</td>
               <td className="px-4 py-2 border">{registro.embarcacion}</td>
               <td className="px-4 py-2 border">{registro.velocidad_optima}</td>
+              <td className="px-4 py-2 border">{registro.fecha_hora}</td>
               <td className="px-4 py-2 border">
-                {registro.fecha_hora}
+                <button
+                  onClick={() => {
+                    setIdToDelete(registro.id);
+                    setShowConfirmModal(true);
+                  }}
+                >
+                  <span className="flex justify-center items-center p-1 bg-red-500 rounded-2xl">
+                    <Trash color="white" />
+                  </span>
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
       {showAlert && (
         <Alert className="text-green-500 bg-green-100">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>REGISTRADOS</AlertTitle>
           <AlertDescription className="text-green-500">
-            Se ha registrado correctamente la velocidad óptima a la embarcación
-            seleccionada.
+            Se ha registrado correctamente la velocidad óptima a la embarcación seleccionada.
           </AlertDescription>
         </Alert>
       )}
@@ -186,6 +199,44 @@ const OrdenNavVelocidadOptima = () => {
             Favor seleccionar una embarcación antes de registrar.
           </AlertDescription>
         </Alert>
+      )}
+
+
+      {deleteAlert && (
+        <Alert className="text-red-500 bg-red-100">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>ELIMINADO</AlertTitle>
+          <AlertDescription className="text-red-500">
+            Se eliminó correctamente el registro.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h2 className="text-lg font-semibold mb-4">
+              ¿Estás seguro de eliminar este registro?
+            </h2>
+            <div className="flex justify-end gap-4">
+              <Button
+                className="bg-gray-300 text-black hover:bg-gray-400"
+                onClick={() => setShowConfirmModal(false)}
+              >
+                No
+              </Button>
+              <Button
+                className="bg-red-500 text-white hover:bg-red-600"
+                onClick={async () => {
+                  await deleteOrden(idToDelete);
+                  setShowConfirmModal(false);
+                }}
+              >
+                Sí
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

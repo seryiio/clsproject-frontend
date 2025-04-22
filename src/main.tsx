@@ -21,7 +21,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <>
     <header className="flex justify-end items-center h-full m-4 p-4 bg-white shadow-2xl rounded-xl">
-      <h1>Bienvenido <strong>SERGIO NICOLAS HUAMÁN CHENG</strong> al Portal de Flota</h1>
+      <h1>Bienvenido <strong>CENTRO DE INFORMACIÓN DE FLOTA</strong> al Portal de Flota</h1>
     </header>
     <SidebarProvider>
       <AppSidebar />
