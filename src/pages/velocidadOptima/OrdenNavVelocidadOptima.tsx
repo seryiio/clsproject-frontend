@@ -63,7 +63,7 @@ const OrdenNavVelocidadOptima = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedEmbarcacion) {
+    if (selectedEmbarcacion && usuarioMaquina) {
       const fetchVelocidad = async () => {
         try {
           const velocidadData = await getVelocidadPorEmbarcacion(selectedEmbarcacion);
@@ -115,11 +115,14 @@ const OrdenNavVelocidadOptima = () => {
   };
 
   const deleteOrden = async (id: number | undefined) => {
-    setId(id);
-    await axios({ method: 'DELETE', url: URL_ORDEN_NAVEGACION + `/${id}`, data: id });
-    setDeleteAlert(true);
-    setTimeout(() => setDeleteAlert(false), 3000);
-    getOrdenNavegacionOptima(setOrdenNavegacionOptima);
+    if (usuarioMaquina) {
+      setId(id);
+      await axios({ method: 'DELETE', url: URL_ORDEN_NAVEGACION + `/${id}`, data: id });
+      setDeleteAlert(true);
+      setTimeout(() => setDeleteAlert(false), 3000);
+      getOrdenNavegacionOptima(setOrdenNavegacionOptima);
+
+    }
   };
 
   return (
@@ -177,26 +180,32 @@ const OrdenNavVelocidadOptima = () => {
           </tr>
         </thead>
         <tbody>
-          {ordenNavegacionOptima.map((registro, index) => (
-            <tr key={index} className="hover:bg-gray-50">
-              <td className="px-4 py-2 border">{index + 1}</td>
-              <td className="px-4 py-2 border">{registro.embarcacion}</td>
-              <td className="px-4 py-2 border">{registro.velocidad_optima}</td>
-              <td className="px-4 py-2 border">{registro.fecha_hora}</td>
-              <td className="px-4 py-2 border">
-                <button
-                  onClick={() => {
-                    setIdToDelete(registro.id);
-                    setShowConfirmModal(true);
-                  }}
-                >
-                  <span className="flex justify-center items-center p-1 bg-red-500 rounded-2xl">
-                    <Trash color="white" />
-                  </span>
-                </button>
-              </td>
-            </tr>
-          ))}
+          {[...ordenNavegacionOptima]
+            .sort((a, b) => {
+              const idA = a.id ?? 0;
+              const idB = b.id ?? 0;
+              return idB - idA;
+            })
+            .map((registro, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="px-4 py-2 border">{index + 1}</td>
+                <td className="px-4 py-2 border">{registro.embarcacion}</td>
+                <td className="px-4 py-2 border">{registro.velocidad_optima}</td>
+                <td className="px-4 py-2 border">{registro.fecha_hora}</td>
+                <td className="px-4 py-2 border">
+                  <button
+                    onClick={() => {
+                      setIdToDelete(registro.id);
+                      setShowConfirmModal(true);
+                    }}
+                  >
+                    <span className="flex justify-center items-center p-1 bg-red-500 rounded-2xl">
+                      <Trash color="white" />
+                    </span>
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
 
