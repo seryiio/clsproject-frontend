@@ -3,6 +3,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IEmbarcacionesFaena } from "@/interfaces/IEmbarcacionesFaena";
 import { OrdenNavegacion } from "@/interfaces/OrdenNavegacion";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { getEmbarcacionesEnFaena } from "@/services/EmbarcacionesEnFaenaServices";
 import {
   getOrdenNavegacionOptima,
@@ -17,6 +35,8 @@ import { AlertCircle, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Form } from "react-router-dom";
 
+const usuario = import.meta.env.VITE_USUARIO
+
 const OrdenNavVelocidadOptima = () => {
   const [listarEmbarcacionesFaena, setEmbarcacionesFaena] = useState<IEmbarcacionesFaena[]>([]);
   const [ordenNavegacionOptima, setOrdenNavegacionOptima] = useState<OrdenNavegacion[]>([]);
@@ -28,6 +48,7 @@ const OrdenNavVelocidadOptima = () => {
   const [id, setId] = useState<number | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [velocidadOptimaEmbarcacionSeleccionada, setVelocidadOptimaEmbarcacionSeleccionada] = useState(0);
+  const [usuarioMaquina, setUsuarioMaquina] = useState<string>(usuario);
 
   const [showAlert, setShowAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
@@ -70,6 +91,7 @@ const OrdenNavVelocidadOptima = () => {
       fecha_hora: new Date().toLocaleString('es-ES', { hour12: false }),
       embarcacion: embarcacionSeleccionada.trim(),
       velocidad_optima: velocidadOptimaEmbarcacionSeleccionada,
+      usuario: usuarioMaquina,
     };
 
     await sendRequest("POST", parameters);
@@ -144,7 +166,6 @@ const OrdenNavVelocidadOptima = () => {
         </Button>
 
       </div>
-
       <table className="min-w-full bg-white border border-gray-300 rounded-lg">
         <thead>
           <tr className="bg-gray-100 text-left">
