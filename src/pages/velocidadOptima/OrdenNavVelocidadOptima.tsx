@@ -26,7 +26,7 @@ const OrdenNavVelocidadOptima = () => {
   const [velocidadOptima, setVelocidadOptima] = useState<number>(0);
 
   const [id, setId] = useState<number | undefined>(undefined);
-  const [fechaHora, setFechaHora] = useState(new Date());
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [velocidadOptimaEmbarcacionSeleccionada, setVelocidadOptimaEmbarcacionSeleccionada] = useState(0);
 
   const [showAlert, setShowAlert] = useState(false);
@@ -64,6 +64,8 @@ const OrdenNavVelocidadOptima = () => {
       return;
     }
 
+    setIsSubmitting(true);
+
     let parameters: OrdenNavegacion = {
       fecha_hora: new Date().toLocaleString('es-ES', { hour12: false }),
       embarcacion: embarcacionSeleccionada.trim(),
@@ -71,6 +73,7 @@ const OrdenNavVelocidadOptima = () => {
     };
 
     await sendRequest("POST", parameters);
+    setIsSubmitting(false);
   };
 
   const sendRequest = async (method: string, parameters: OrdenNavegacion) => {
@@ -101,11 +104,7 @@ const OrdenNavVelocidadOptima = () => {
     <div className="flex flex-col w-full p-4 mx-4 rounded-xl bg-white gap-8">
       <h1 className="text-2xl font-bold mb-4">Registrar Velocidad Óptima</h1>
 
-      <Form
-        action="/ordenNavegacionVelocidadOptima"
-        method="post"
-        className="justify-start flex flex-wrap items-end w-full gap-8"
-      >
+      <div className="justify-start flex flex-wrap items-end w-full gap-8">
         <div>
           <Label>Embarcación</Label>
           <select
@@ -123,6 +122,7 @@ const OrdenNavVelocidadOptima = () => {
             ))}
           </select>
         </div>
+
         <div>
           <Label htmlFor="velocidad">Velocidad Óptima</Label>
           <Input
@@ -134,18 +134,16 @@ const OrdenNavVelocidadOptima = () => {
             disabled
           />
         </div>
-
         <Button
-          type="submit"
+          type="button"
           className="text-white bg-green-500"
-          onClick={(e) => {
-            e.preventDefault();
-            validate();
-          }}
+          onClick={validate}
+          disabled={isSubmitting}
         >
-          Registrar
+          {isSubmitting ? "Registrando..." : "Registrar"}
         </Button>
-      </Form>
+
+      </div>
 
       <table className="min-w-full bg-white border border-gray-300 rounded-lg">
         <thead>
