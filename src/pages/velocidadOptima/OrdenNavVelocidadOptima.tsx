@@ -57,6 +57,13 @@ const OrdenNavVelocidadOptima = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | undefined>(undefined);
 
+
+  const [codigoVessel, setCodigoVessel] = useState<string>("");
+  const [fechaZarpe, setFechaZarpe] = useState<string>("");
+  const [fechaArribo, setFechaArribo] = useState<string>("");
+  const [horaZarpe, setHoraZarpe] = useState<string>("");
+  const [horaArribo, setHoraArribo] = useState<string>("");
+
   useEffect(() => {
     getEmbarcacionesEnFaena(setEmbarcacionesFaena);
     getOrdenNavegacionOptima(setOrdenNavegacionOptima);
@@ -70,13 +77,29 @@ const OrdenNavVelocidadOptima = () => {
           setVelocidadOptima(velocidadData);
           setEmbarcacionSeleccionada(selectedEmbarcacion);
           setVelocidadOptimaEmbarcacionSeleccionada(velocidadData);
+  
+          // Buscar la embarcación seleccionada en el array
+          const embarcacionObj = listarEmbarcacionesFaena.find(
+            (emb) => emb.EMBARCACION === selectedEmbarcacion
+          );
+  
+          if (embarcacionObj) {
+            setCodigoVessel(embarcacionObj.CODOR);
+            setFechaZarpe(embarcacionObj.FECZR);
+            setFechaArribo(embarcacionObj.FECAR);
+            setHoraZarpe(embarcacionObj.HORZR);
+            setHoraArribo(embarcacionObj.HORAR);
+          }
+  
         } catch (error) {
           console.error("Error al obtener la velocidad óptima:", error);
         }
       };
+  
       fetchVelocidad();
     }
-  }, [selectedEmbarcacion]);
+  }, [selectedEmbarcacion, usuarioMaquina, listarEmbarcacionesFaena]);
+  
 
   const validate = async () => {
     if (selectedEmbarcacion.trim() === "" || velocidadOptimaEmbarcacionSeleccionada === 0) {
@@ -92,6 +115,11 @@ const OrdenNavVelocidadOptima = () => {
       embarcacion: embarcacionSeleccionada.trim(),
       velocidad_optima: velocidadOptimaEmbarcacionSeleccionada,
       usuario: usuarioMaquina,
+      CODOR: codigoVessel,
+      FECZR: fechaZarpe,
+      FECAR: fechaArribo,
+      HORZR: horaZarpe,
+      HORAR: horaArribo,
     };
 
     await sendRequest("POST", parameters);
@@ -147,7 +175,6 @@ const OrdenNavVelocidadOptima = () => {
             ))}
           </select>
         </div>
-
         <div>
           <Label htmlFor="velocidad">Velocidad Óptima</Label>
           <Input

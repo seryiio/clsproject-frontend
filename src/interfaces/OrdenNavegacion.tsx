@@ -3,5 +3,10 @@ export interface OrdenNavegacion {
     fecha_hora: string,
     embarcacion: string,
     velocidad_optima: number,
-    usuario: string
+    usuario: string,
+    CODOR: string,
+    FECZR: string,
+    FECAR: string,
+    HORZR: string,
+    HORAR: string,
 }
