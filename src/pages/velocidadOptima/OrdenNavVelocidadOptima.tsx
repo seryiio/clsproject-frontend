@@ -78,7 +78,6 @@ const OrdenNavVelocidadOptima = () => {
           setEmbarcacionSeleccionada(selectedEmbarcacion);
           setVelocidadOptimaEmbarcacionSeleccionada(velocidadData);
   
-          // Buscar la embarcación seleccionada en el array
           const embarcacionObj = listarEmbarcacionesFaena.find(
             (emb) => emb.EMBARCACION === selectedEmbarcacion
           );
