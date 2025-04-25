@@ -58,6 +58,7 @@ const OrdenNavVelocidadOptima = () => {
   const [idToDelete, setIdToDelete] = useState<number | undefined>(undefined);
 
 
+  const [matricula, setMatricula] = useState<string>("");
   const [codigoVessel, setCodigoVessel] = useState<string>("");
   const [fechaZarpe, setFechaZarpe] = useState<string>("");
   const [fechaArribo, setFechaArribo] = useState<string>("");
@@ -83,6 +84,7 @@ const OrdenNavVelocidadOptima = () => {
           );
   
           if (embarcacionObj) {
+            setMatricula(embarcacionObj.MATRICULA);
             setCodigoVessel(embarcacionObj.CODOR);
             setFechaZarpe(embarcacionObj.FECZR);
             setFechaArribo(embarcacionObj.FECAR);
@@ -112,6 +114,7 @@ const OrdenNavVelocidadOptima = () => {
     let parameters: OrdenNavegacion = {
       fecha_hora: new Date().toLocaleString('es-ES', { hour12: false }),
       embarcacion: embarcacionSeleccionada.trim(),
+      matricula: matricula,
       velocidad_optima: velocidadOptimaEmbarcacionSeleccionada,
       usuario: usuarioMaquina,
       CODOR: codigoVessel,
