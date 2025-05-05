@@ -37,6 +37,8 @@ import { Form } from "react-router-dom";
 
 const usuario = import.meta.env.VITE_USUARIO
 
+const PAGE_SIZE = 10;
+
 const OrdenNavVelocidadOptima = () => {
   const [listarEmbarcacionesFaena, setEmbarcacionesFaena] = useState<IEmbarcacionesFaena[]>([]);
   const [ordenNavegacionOptima, setOrdenNavegacionOptima] = useState<OrdenNavegacion[]>([]);
@@ -155,88 +157,16 @@ const OrdenNavVelocidadOptima = () => {
     }
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(ordenNavegacionOptima.length / PAGE_SIZE);
+  const currentData = [...ordenNavegacionOptima]
+    .sort((a, b) => (b.id ?? 0) - (a.id ?? 0))
+    .slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
   return (
     <div className="flex flex-col w-full p-4 mx-4 rounded-xl bg-white gap-8">
       <h1 className="text-2xl font-bold mb-4">Registrar Velocidad Óptima</h1>
-
-      <div className="justify-start flex flex-wrap items-end w-full gap-8">
-        <div>
-          <Label>Embarcación</Label>
-          <select
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-              setSelectedEmbarcacion(e.target.value)
-            }
-            value={selectedEmbarcacion}
-            className="w-full border rounded p-2"
-          >
-            <option value="">Seleccionar</option>
-            {listarEmbarcacionesFaena.map((e, index) => (
-              <option key={e.EMBARCACION} value={e.EMBARCACION}>
-                {index + 1}. {e.EMBARCACION}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <Label htmlFor="velocidad">Velocidad Óptima</Label>
-          <Input
-            id="velocidad"
-            type="number"
-            placeholder="Velocidad óptima"
-            value={velocidadOptima}
-            onChange={(e) => setVelocidadOptima(Number(e.target.value))}
-            disabled
-          />
-        </div>
-        <Button
-          type="button"
-          className="text-white bg-green-500"
-          onClick={validate}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Registrando..." : "Registrar"}
-        </Button>
-
-      </div>
-      <table className="min-w-full bg-white border border-gray-300 rounded-lg">
-        <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="px-4 py-2 border">#</th>
-            <th className="px-4 py-2 border">Embarcación</th>
-            <th className="px-4 py-2 border">Velocidad Óptima</th>
-            <th className="px-4 py-2 border">Fecha y Hora</th>
-            <th className="px-4 py-2 border">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {[...ordenNavegacionOptima]
-            .sort((a, b) => {
-              const idA = a.id ?? 0;
-              const idB = b.id ?? 0;
-              return idB - idA;
-            })
-            .map((registro, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="px-4 py-2 border">{index + 1}</td>
-                <td className="px-4 py-2 border">{registro.embarcacion}</td>
-                <td className="px-4 py-2 border">{registro.velocidad_optima}</td>
-                <td className="px-4 py-2 border">{registro.fecha_hora}</td>
-                <td className="px-4 py-2 border">
-                  <button
-                    onClick={() => {
-                      setIdToDelete(registro.id);
-                      setShowConfirmModal(true);
-                    }}
-                  >
-                    <span className="flex justify-center items-center p-1 bg-red-500 rounded-2xl">
-                      <Trash color="white" />
-                    </span>
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
 
       {showAlert && (
         <Alert className="text-green-500 bg-green-100">
@@ -295,6 +225,100 @@ const OrdenNavVelocidadOptima = () => {
           </div>
         </div>
       )}
+
+      <div className="justify-start flex flex-wrap items-end w-full gap-8">
+        <div>
+          <Label>Embarcación</Label>
+          <select
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setSelectedEmbarcacion(e.target.value)
+            }
+            value={selectedEmbarcacion}
+            className="w-full border rounded p-2"
+          >
+            <option value="">Seleccionar</option>
+            {listarEmbarcacionesFaena.map((e, index) => (
+              <option key={e.EMBARCACION} value={e.EMBARCACION}>
+                {index + 1}. {e.EMBARCACION}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <Label htmlFor="velocidad">Velocidad Óptima</Label>
+          <Input
+            id="velocidad"
+            type="number"
+            placeholder="Velocidad óptima"
+            value={velocidadOptima}
+            onChange={(e) => setVelocidadOptima(Number(e.target.value))}
+            disabled
+          />
+        </div>
+        <Button
+          type="button"
+          className="text-white bg-green-500"
+          onClick={validate}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Registrando..." : "Registrar"}
+        </Button>
+
+      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>#</TableHead>
+            <TableHead>Embarcación</TableHead>
+            <TableHead>Velocidad Óptima</TableHead>
+            <TableHead>Fecha y Hora</TableHead>
+            <TableHead>Acciones</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {currentData.map((registro, index) => (
+            <TableRow key={registro.id}>
+              <TableCell>{(currentPage - 1) * PAGE_SIZE + index + 1}</TableCell>
+              <TableCell>{registro.embarcacion}</TableCell>
+              <TableCell>{registro.velocidad_optima}</TableCell>
+              <TableCell>{registro.fecha_hora}</TableCell>
+              <TableCell>
+                <button
+                  onClick={() => {
+                    setIdToDelete(registro.id);
+                    setShowConfirmModal(true);
+                  }}
+                  className="p-1 bg-red-500 rounded-2xl flex items-center justify-center"
+                >
+                  <Trash size={16} color="white" />
+                </button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <Pagination className="mt-4">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              aria-disabled={currentPage === 1}
+            />
+          </PaginationItem>
+          <PaginationItem className="px-2 text-sm font-medium">
+            Página {currentPage} de {totalPages}
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              aria-disabled={currentPage === totalPages}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 };

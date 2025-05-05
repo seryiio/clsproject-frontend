@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
 import OrdenNavVelocidadOptima from "./pages/velocidadOptima/OrdenNavVelocidadOptima";
+import ReporteCombustible from "./pages/velocidadOptima/ReporteCombustible";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
       Object.fromEntries(formData);
       return null;
     },
+  },
+  {
+    path: "/combustible",
+    element: <ReporteCombustible />,
   }
 ]);
 

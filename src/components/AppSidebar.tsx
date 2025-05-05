@@ -1,4 +1,4 @@
-import { Book, LogOut } from "lucide-react";
+import { Book, LogOut, Sailboat } from "lucide-react";
 
 import {
   Sidebar,
@@ -19,6 +19,11 @@ const items = [
     title: "Registrar velocidad optima",
     url: "/",
     icon: Book,
+  },
+  {
+    title: "Reporte Embarcaciones",
+    url: "/combustible",
+    icon: Sailboat,
   },
   {
     title: "Salir",
