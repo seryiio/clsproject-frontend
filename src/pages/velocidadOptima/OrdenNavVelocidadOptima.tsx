@@ -80,11 +80,11 @@ const OrdenNavVelocidadOptima = () => {
           setVelocidadOptima(velocidadData);
           setEmbarcacionSeleccionada(selectedEmbarcacion);
           setVelocidadOptimaEmbarcacionSeleccionada(velocidadData);
-  
+
           const embarcacionObj = listarEmbarcacionesFaena.find(
             (emb) => emb.EMBARCACION === selectedEmbarcacion
           );
-  
+
           if (embarcacionObj) {
             setMatricula(embarcacionObj.MATRICULA);
             setCodigoVessel(embarcacionObj.CODOR);
@@ -93,16 +93,16 @@ const OrdenNavVelocidadOptima = () => {
             setHoraZarpe(embarcacionObj.HORZR);
             setHoraArribo(embarcacionObj.HORAR);
           }
-  
+
         } catch (error) {
           console.error("Error al obtener la velocidad óptima:", error);
         }
       };
-  
+
       fetchVelocidad();
     }
   }, [selectedEmbarcacion, usuarioMaquina, listarEmbarcacionesFaena]);
-  
+
 
   const validate = async () => {
     if (selectedEmbarcacion.trim() === "" || velocidadOptimaEmbarcacionSeleccionada === 0) {
@@ -168,64 +168,6 @@ const OrdenNavVelocidadOptima = () => {
     <div className="flex flex-col w-full p-4 mx-4 rounded-xl bg-white gap-8">
       <h1 className="text-2xl font-bold mb-4">Registrar Velocidad Óptima</h1>
 
-      {showAlert && (
-        <Alert className="text-green-500 bg-green-100">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>REGISTRADOS</AlertTitle>
-          <AlertDescription className="text-green-500">
-            Se ha registrado correctamente la velocidad óptima a la embarcación seleccionada.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {errorAlert && (
-        <Alert className="text-red-500 bg-red-100">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>ERROR</AlertTitle>
-          <AlertDescription className="text-red-500">
-            Favor seleccionar una embarcación antes de registrar.
-          </AlertDescription>
-        </Alert>
-      )}
-
-
-      {deleteAlert && (
-        <Alert className="text-red-500 bg-red-100">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>ELIMINADO</AlertTitle>
-          <AlertDescription className="text-red-500">
-            Se eliminó correctamente el registro.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {showConfirmModal && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 className="text-lg font-semibold mb-4">
-              ¿Estás seguro de eliminar este registro?
-            </h2>
-            <div className="flex justify-end gap-4">
-              <Button
-                className="bg-gray-300 text-black hover:bg-gray-400"
-                onClick={() => setShowConfirmModal(false)}
-              >
-                No
-              </Button>
-              <Button
-                className="bg-red-500 text-white hover:bg-red-600"
-                onClick={async () => {
-                  await deleteOrden(idToDelete);
-                  setShowConfirmModal(false);
-                }}
-              >
-                Sí
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="justify-start flex flex-wrap items-end w-full gap-8">
         <div>
           <Label>Embarcación</Label>
@@ -263,6 +205,64 @@ const OrdenNavVelocidadOptima = () => {
         >
           {isSubmitting ? "Registrando..." : "Registrar"}
         </Button>
+
+        {showAlert && (
+          <Alert className="text-green-500 bg-green-100">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>REGISTRADOS</AlertTitle>
+            <AlertDescription className="text-green-500">
+              Se ha registrado correctamente la velocidad óptima a la embarcación seleccionada.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {errorAlert && (
+          <Alert className="text-red-500 bg-red-100">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>ERROR</AlertTitle>
+            <AlertDescription className="text-red-500">
+              Favor seleccionar una embarcación antes de registrar.
+            </AlertDescription>
+          </Alert>
+        )}
+
+
+        {deleteAlert && (
+          <Alert className="text-red-500 bg-red-100">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>ELIMINADO</AlertTitle>
+            <AlertDescription className="text-red-500">
+              Se eliminó correctamente el registro.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {showConfirmModal && (
+          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+              <h2 className="text-lg font-semibold mb-4">
+                ¿Estás seguro de eliminar este registro?
+              </h2>
+              <div className="flex justify-end gap-4">
+                <Button
+                  className="bg-gray-300 text-black hover:bg-gray-400"
+                  onClick={() => setShowConfirmModal(false)}
+                >
+                  No
+                </Button>
+                <Button
+                  className="bg-red-500 text-white hover:bg-red-600"
+                  onClick={async () => {
+                    await deleteOrden(idToDelete);
+                    setShowConfirmModal(false);
+                  }}
+                >
+                  Sí
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
       <Table>

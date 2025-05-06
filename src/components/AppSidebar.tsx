@@ -16,12 +16,12 @@ import logo from '../../public/logosidebar.png'
 
 const items = [
   {
-    title: "Registrar velocidad optima",
+    title: "Registrar Velocidad Óptima",
     url: "/",
     icon: Book,
   },
   {
-    title: "Reporte Embarcaciones",
+    title: "Reporte Combustible",
     url: "/combustible",
     icon: Sailboat,
   },
