@@ -1,4 +1,5 @@
 export interface VelocidadOptimaInterface {
     embarcacion:string,
-    velocidad_optima: number
+    velocidad_optima: number,
+    gph: number
 }

@@ -4,6 +4,7 @@ export interface OrdenNavegacion {
     matricula: string,
     embarcacion: string,
     velocidad_optima: number,
+    gph: number,
     usuario: string,
     CODOR: string,
     FECZR: string,
