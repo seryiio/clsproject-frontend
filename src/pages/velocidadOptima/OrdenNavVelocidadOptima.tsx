@@ -28,6 +28,7 @@ import {
 } from "@/services/OrdenNavegacionServices";
 import {
   getGphPorEmbarcacion,
+  getRpmPorEmbarcacion,
   getVelocidadPorEmbarcacion,
 } from "@/services/VelocidadOptimaServices";
 import { Label } from "@radix-ui/react-label";
@@ -48,11 +49,13 @@ const OrdenNavVelocidadOptima = () => {
   const [embarcacionSeleccionada, setEmbarcacionSeleccionada] = useState("");
   const [velocidadOptima, setVelocidadOptima] = useState<number>(0);
   const [gph, setGph] = useState<number>(0);
+  const [rpm, setRpm] = useState<number>(0);
 
   const [id, setId] = useState<number | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [velocidadOptimaEmbarcacionSeleccionada, setVelocidadOptimaEmbarcacionSeleccionada] = useState(0);
   const [gphSeleccionado, setGphSeleccionado] = useState(0);
+  const [rpmSeleccionado, setRpmSeleccionado] = useState(0);
   const [usuarioMaquina, setUsuarioMaquina] = useState<string>(usuario);
 
   const [showAlert, setShowAlert] = useState(false);
@@ -82,11 +85,14 @@ const OrdenNavVelocidadOptima = () => {
         try {
           const velocidadData = await getVelocidadPorEmbarcacion(selectedEmbarcacion);
           const gphData = await getGphPorEmbarcacion(selectedEmbarcacion);
+          const rpmData = await getRpmPorEmbarcacion(selectedEmbarcacion);
           setVelocidadOptima(velocidadData);
           setGph(gphData);
+          setRpm(rpmData);
           setEmbarcacionSeleccionada(selectedEmbarcacion);
           setVelocidadOptimaEmbarcacionSeleccionada(velocidadData);
           setGphSeleccionado(gphData);
+          setRpmSeleccionado(rpmData);
 
           const embarcacionObj = listarEmbarcacionesFaena.find(
             (emb) => emb.EMBARCACION === selectedEmbarcacion
@@ -126,6 +132,7 @@ const OrdenNavVelocidadOptima = () => {
       matricula: matricula,
       velocidad_optima: velocidadOptimaEmbarcacionSeleccionada,
       gph: gphSeleccionado,
+      rpm: rpmSeleccionado,
       usuario: usuarioMaquina,
       CODOR: codigoVessel,
       FECZR: fechaZarpe,
@@ -175,8 +182,7 @@ const OrdenNavVelocidadOptima = () => {
   return (
     <div className="flex flex-col w-full p-4 mx-4 rounded-xl bg-white gap-8">
       <h1 className="text-2xl font-bold mb-4">Registrar Velocidad Óptima</h1>
-
-      <div className="justify-start flex flex-wrap items-end w-full gap-8">
+      <div className="justify-start flex flex-wrap items-end w-full gap-4">
         <div>
           <Label>Embarcación</Label>
           <select
@@ -202,6 +208,17 @@ const OrdenNavVelocidadOptima = () => {
             placeholder="Velocidad óptima"
             value={velocidadOptima}
             onChange={(e) => setVelocidadOptima(Number(e.target.value))}
+            disabled
+          />
+        </div>
+        <div>
+          <Label htmlFor="rpm">Rpm</Label>
+          <Input
+            id="rpm"
+            type="number"
+            placeholder="Rpm"
+            value={rpm}
+            onChange={(e) => setRpm(Number(e.target.value))}
             disabled
           />
         </div>
