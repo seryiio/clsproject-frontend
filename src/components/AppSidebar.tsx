@@ -1,4 +1,4 @@
-import { Book, LogOut, Sailboat } from "lucide-react";
+import { Book, LogOut, PencilLine, Sailboat } from "lucide-react";
 
 import {
   Sidebar,
@@ -16,7 +16,12 @@ import logo from '../../public/logosidebar.png'
 
 const items = [
   {
-    title: "Registrar Velocidad Óptima",
+    title: "Editar velocidades",
+    url: "/editarVelocidades",
+    icon: PencilLine,
+  },
+  {
+    title: "Orden velocidad ótima",
     url: "/",
     icon: Book,
   },

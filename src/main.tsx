@@ -6,6 +6,7 @@ import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
 import OrdenNavVelocidadOptima from "./pages/velocidadOptima/OrdenNavVelocidadOptima";
 import ReporteCombustible from "./pages/velocidadOptima/ReporteCombustible";
+import VelocidadOptima from "./pages/velocidadOptima/VelocidadOptima";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,11 @@ const router = createBrowserRouter([
       Object.fromEntries(formData);
       return null;
     },
+    
+  },
+  {
+    path: "/editarVelocidades",
+    element: <VelocidadOptima />,
   },
   {
     path: "/combustible",

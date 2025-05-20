@@ -28,7 +28,9 @@ import {
 } from "@/services/OrdenNavegacionServices";
 import {
   getGphPorEmbarcacion,
+  getRpmNominalPorEmbarcacion,
   getRpmPorEmbarcacion,
+  getVelocidadNominalPorEmbarcacion,
   getVelocidadPorEmbarcacion,
 } from "@/services/VelocidadOptimaServices";
 import { Label } from "@radix-ui/react-label";
@@ -50,12 +52,16 @@ const OrdenNavVelocidadOptima = () => {
   const [velocidadOptima, setVelocidadOptima] = useState<number>(0);
   const [gph, setGph] = useState<number>(0);
   const [rpm, setRpm] = useState<number>(0);
+  const [velocidadNominal, setVelocidadNominal] = useState<number>(0);
+  const [rpmNominal, setRpmNominal] = useState<number>(0);
 
   const [id, setId] = useState<number | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [velocidadOptimaEmbarcacionSeleccionada, setVelocidadOptimaEmbarcacionSeleccionada] = useState(0);
   const [gphSeleccionado, setGphSeleccionado] = useState(0);
   const [rpmSeleccionado, setRpmSeleccionado] = useState(0);
+  const [velocidadNominalSeleccionado, setVelocidadNominalSeleccionado] = useState(0);
+  const [rpmNominalSeleccionado, setRpmNominalSeleccionado] = useState(0);
   const [usuarioMaquina, setUsuarioMaquina] = useState<string>(usuario);
 
   const [showAlert, setShowAlert] = useState(false);
@@ -86,13 +92,19 @@ const OrdenNavVelocidadOptima = () => {
           const velocidadData = await getVelocidadPorEmbarcacion(selectedEmbarcacion);
           const gphData = await getGphPorEmbarcacion(selectedEmbarcacion);
           const rpmData = await getRpmPorEmbarcacion(selectedEmbarcacion);
+          const velocidadNominalData = await getVelocidadNominalPorEmbarcacion(selectedEmbarcacion);
+          const rpmNominalData = await getRpmNominalPorEmbarcacion(selectedEmbarcacion);
           setVelocidadOptima(velocidadData);
           setGph(gphData);
           setRpm(rpmData);
+          setVelocidadNominal(velocidadNominalData);
+          setRpmNominal(rpmNominalData);
           setEmbarcacionSeleccionada(selectedEmbarcacion);
           setVelocidadOptimaEmbarcacionSeleccionada(velocidadData);
           setGphSeleccionado(gphData);
           setRpmSeleccionado(rpmData);
+          setVelocidadNominalSeleccionado(velocidadNominalData);
+          setRpmNominalSeleccionado(rpmNominalData);
 
           const embarcacionObj = listarEmbarcacionesFaena.find(
             (emb) => emb.EMBARCACION === selectedEmbarcacion
@@ -131,8 +143,10 @@ const OrdenNavVelocidadOptima = () => {
       embarcacion: embarcacionSeleccionada.trim(),
       matricula: matricula,
       velocidad_optima: velocidadOptimaEmbarcacionSeleccionada,
+      velocidad_nominal: velocidadNominalSeleccionado,
       gph: gphSeleccionado,
       rpm: rpmSeleccionado,
+      rpm_nominal: rpmNominalSeleccionado,
       usuario: usuarioMaquina,
       CODOR: codigoVessel,
       FECZR: fechaZarpe,
@@ -208,6 +222,29 @@ const OrdenNavVelocidadOptima = () => {
             placeholder="Velocidad óptima"
             value={velocidadOptima}
             onChange={(e) => setVelocidadOptima(Number(e.target.value))}
+            disabled
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="velocidad nominal">Velocidad Nominal</Label>
+          <Input
+            id="velocidad nominal"
+            type="number"
+            placeholder="Velocidad nominal"
+            value={velocidadNominal}
+            onChange={(e) => setVelocidadNominal(Number(e.target.value))}
+            disabled
+          />
+        </div>
+        <div>
+          <Label htmlFor="rpm nominal">Rpm Nominal</Label>
+          <Input
+            id="rpm nominal"
+            type="number"
+            placeholder="Rpm Nominal"
+            value={rpmNominal}
+            onChange={(e) => setRpmNominal(Number(e.target.value))}
             disabled
           />
         </div>
@@ -302,13 +339,13 @@ const OrdenNavVelocidadOptima = () => {
 
       </div>
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-[#043f80]">
           <TableRow>
-            <TableHead>#</TableHead>
-            <TableHead>Embarcación</TableHead>
-            <TableHead>Velocidad Óptima</TableHead>
-            <TableHead>Fecha y Hora</TableHead>
-            <TableHead>Acciones</TableHead>
+            <TableHead className="text-white">#</TableHead>
+            <TableHead className="text-white">Embarcación</TableHead>
+            <TableHead className="text-white">Velocidad Óptima</TableHead>
+            <TableHead className="text-white">Fecha y Hora</TableHead>
+            <TableHead className="text-white">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
